@@ -242,6 +242,10 @@ span.xwh-subheading {
 }
 
 
+.xoo-wl-popup-active.xoo-wl-popup[data-wpr-lazyrender] {
+    content-visibility: visible!important;
+}
+
 
 
 @media only screen and (min-height: 650px) {

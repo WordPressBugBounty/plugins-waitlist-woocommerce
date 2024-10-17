@@ -17,15 +17,16 @@
 		global $wpdb;
 
 		$this->waitlist_table		= $wpdb->prefix . 'xoo_wl_list';
-		$this->waitlist_meta_table = $wpdb->prefix . 'xoo_wl_list_meta';
+		$this->waitlist_meta_table 	= $wpdb->prefix . 'xoo_wl_list_meta';
+		$this->waitlist_crons_table = $wpdb->prefix . 'xoo_wl_crons';
 
+		$this->create_table();
 		$this->hooks();
 
 	}
 
 
 	public function hooks(){
-		add_action( 'wp_loaded', array( $this, 'create_table' ), 15 );
 		add_action( 'plugins_loaded', array( $this, 'register_meta_table' ), 20 );
 	}
 
@@ -130,6 +131,13 @@
 			return '%d';
 		}elseif( $type === "float" ){
 			return '%f';
+		}
+		elseif ( $type === 'array' ) {
+			$placeholders = array();
+		 	foreach ( $input as $inputVal ) {
+		 		$placeholders[] = $this->get_placeholder($inputVal);
+		 	}
+		 	return '('.implode(',', $placeholders).')' ;
 		}
 		else{
 			return '%s';
@@ -272,8 +280,15 @@
 		return false;
 	}
 
-
 	public function get_waitlist_rows( $args = array(), $output = OBJECT ){
+		return $this->get_rows( $this->waitlist_table, $args );
+	}
+
+	public function get_cron_rows( $args = array(), $output = OBJECT ){
+		return $this->get_rows( $this->waitlist_crons_table, $args );
+	}
+
+	public function get_rows( $table, $args = array(), $output = OBJECT ){
 		
 		global $wpdb;
 
@@ -291,11 +306,7 @@
 
 		$values = array();
 
-		$query = "SELECT * FROM {$this->waitlist_table}";
-
-		/*if( $with_meta ){
-			$query .= " LEFT JOIN {$this->waitlist_meta_table} ON {$this->waitlist_table}.xoo_wl_id = {$this->waitlist_meta_table}.xoo_wl_id";
-		}*/
+		$query = "SELECT * FROM {$table}";
 
 		$query .= " WHERE";
 
@@ -310,7 +321,13 @@
 				$compare = isset( $whereData['compare'] ) ? $whereData['compare'] : '=';
 				$query .= " {$compare}";
 				$query .= " {$this->get_placeholder( $whereData['value'] )}";
-				$values[] = $whereData['value'];
+				if( is_array( $whereData['value'] ) ){
+					$values = array_merge( $values, $whereData['value'] );
+				}
+				else{
+					$values[] = $whereData['value'];
+				}
+				
 				$i++;
 			}
 		}
@@ -318,7 +335,6 @@
 			$query .= " 1 = %d";
 			$values[] = 1;
 		}
-
 
 		if( $limit !== -1 ){
 
@@ -448,15 +464,138 @@
 	}
 
 
+	public function insert_cron_row( $data = array() ){
+
+		global $wpdb;
+
+		$defaults = array(
+			'product_id' 	=> 0,
+			'status' 		=> 'inqueue',
+			'created' 		=> current_time( 'mysql' ),
+			'emails_count'	=> 0,
+		);
+
+		$data = wp_parse_args( $data, $defaults );
+
+		$wpdb->insert( $this->waitlist_crons_table, $data );
+
+		return $wpdb->insert_id;
+
+	}
+
+
+	public function update_cron_row( $data, $where ){
+
+		global $wpdb;
+
+		return $wpdb->update( $this->waitlist_crons_table, $data, $where );
+
+	}
+
+	public function get_cron_row_by_id( $cron_id, $args = array() ){
+		
+		$args['where'][] = array(
+			'key' 		=> 'cron_id',
+			'value' 	=> $cron_id,
+			'compare' 	=> '='
+		);
+
+		$rows = $this->get_cron_rows( $args );
+
+		if( !empty( $rows ) ){
+			return $rows[0]; // can only be one row
+		}
+		
+	}
+
+
+	public function get_cron_rows_by_product_id( $product_id, $status = '', $args = array() ){
+		
+		$args['where'][] = array(
+			'key' 		=> 'product_id',
+			'value' 	=> $product_id,
+			'compare' 	=> '='
+		);
+		
+		if( $status ){
+			$args['where'][] = array(
+				'key' 		=> 'status',
+				'value' 	=> $status,
+				'compare' 	=> is_array( $status ) ? 'IN': '='
+			);
+		}
+
+		$rows = $this->get_cron_rows( $args );
+		
+		return $rows;
+	}
+
+
+	public function get_cron_rows_by_status( $status, $args = array() ){
+
+		
+		$args['where'][] = array(
+			'key' 		=> 'status',
+			'value' 	=> $status,
+			'compare' 	=> is_array( $status ) ? 'IN': '='
+		);
+		
+
+		$rows = $this->get_cron_rows( $args );
+		
+		return $rows;
+
+	}
+
+
+
+	//Clear completed cron jobs
+	public function clear_completed_crons(){
+
+		global $wpdb;
+
+		return $wpdb->delete(
+			$this->waitlist_crons_table,
+			array(
+				'status' => 'completed'
+			)
+		);
+	}
+
+
+	public function cleanup_crons(){
+
+		global $wpdb;
+
+		$lastChecked = get_option( 'xoo-wl-cron-cleanup-last-check' );
+
+		//Check once in 30 days
+		if( !$lastChecked || strtotime( $lastChecked ) < strtotime('-31 days') ){
+
+			// Query to delete rows older than 30 days based on the 'created' column
+			$query = $wpdb->prepare(
+			    "DELETE FROM $this->waitlist_crons_table WHERE created < DATE_SUB(NOW(), INTERVAL 30 DAY)"
+			);
+
+			// Execute the query
+			$wpdb->query($query);
+
+			update_option( 'xoo-wl-cron-cleanup-last-check', date('Y-m-d') );
+		}
+
+	}
+
+
 
 	public function create_table(){
 
 		global $wpdb;
 
 		$version_option = 'xoo-wl-db-version';
+
 		$db_version 	= get_option( $version_option );
 
-		if( version_compare( $db_version, '1.0', '=' ) ) return;
+		if( version_compare( $db_version, '1.1', '=' ) ) return;
 
 		$charset_collate = $wpdb->get_charset_collate();
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -483,9 +622,21 @@
 			PRIMARY KEY  (meta_id)
 			) $charset_collate;";
 
+
+		$sql .= "CREATE TABLE {$this->waitlist_crons_table} (
+			cron_id BIGINT(20) UNSIGNED AUTO_INCREMENT,
+			product_id BIGINT(20) UNSIGNED NOT NULL,
+			status VARCHAR(100) NOT NULL,
+			created DATETIME NOT NULL,
+			emails_count BIGINT(20) UNSIGNED NOT NULL,
+			PRIMARY KEY  (cron_id),
+			KEY product_id (product_id),
+		    KEY status (status)
+			) $charset_collate;";
+
 		dbDelta( $sql );
 
-		update_option( $version_option, '1.0' );
+		update_option( $version_option, '1.1' );
 
 	}
 

@@ -31,7 +31,7 @@ class Xoo_Wl{
 		$this->define( "XOO_WL_PATH", plugin_dir_path( XOO_WL_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WL_PLUGIN_BASENAME",plugin_basename( XOO_WL_PLUGIN_FILE ) );
 		$this->define( "XOO_WL_URL", untrailingslashit( plugins_url( '/', XOO_WL_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WL_VERSION", "2.7.7" ); //Plugin version
+		$this->define( "XOO_WL_VERSION", "2.7.8" ); //Plugin version
 		$this->define( "XOO_WL_LITE", true );
 	}
 
@@ -188,6 +188,11 @@ class Xoo_Wl{
 
 		}
 
+
+		if( $db_version && version_compare( $db_version, '2.7.8', '<') ){
+			$this->reformat_emailcronhistory();
+		}
+
 		if( version_compare( $db_version, XOO_WL_VERSION, '<') ){
 			xoo_wl()->aff->fields->set_defaults();
 			//Update to current version
@@ -195,6 +200,24 @@ class Xoo_Wl{
 		}
 	}
 
+
+	public function reformat_emailcronhistory(){
+
+		$crons = xoo_wl_core()->get_email_cron_history();
+
+		$crons = array_slice( $crons, -50 );
+
+		foreach ( $crons as $index => $cron ) {
+			xoo_wl_db()->insert_cron_row(
+				array(
+					'product_id' 	=> $cron['product_id'],
+					'status' 		=> $cron['status'],
+					'created' 		=> date('Y-m-d H:i:s', $cron['started'] ),
+					'emails_count'	=> $cron['count'],
+				)
+			);
+		}
+	}
 
 
 	public function is_cron_ok(){

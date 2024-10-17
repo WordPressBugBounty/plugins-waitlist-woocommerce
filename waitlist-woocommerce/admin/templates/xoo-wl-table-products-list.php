@@ -45,7 +45,7 @@
 				
 				$edit_link 		= $product->is_type('variation') ? get_edit_post_link( $product->get_parent_id() ) : get_edit_post_link( $product_id );
 
-				$product_title  = apply_filters( 'xoo_wl_admin_products_table_product_title', $product->get_formatted_name(), $productRow );
+				$product_title  = apply_filters( 'xoo_wl_admin_products_table_product_title', $product->get_name(), $productRow );
 
 
 

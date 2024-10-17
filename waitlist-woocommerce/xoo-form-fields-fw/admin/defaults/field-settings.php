@@ -124,9 +124,7 @@ $field_settings = array(
 		'label',
 		'cols',
 		'icon',
-		'use_select2' => array(
-			'value' => 'yes'
-		),
+		'use_select2',
 		'placeholder',
 		'country_list',
 		'country_choose',
@@ -207,7 +205,23 @@ $field_settings = array(
 		'password_visibility',
 		'unique_id',
 		'class'
-	)
+	),
+
+	'xoo_aff_upload' => array(
+		'active',
+		'required',
+		'show_label',
+		'label',
+		'cols',
+		'icon' => array(
+			'value' => 'fas fa-cloud-upload-alt'
+		),
+		'max_filesize',
+		'file_type',
+		'file_multiple',
+		'unique_id',
+		'class'
+	),
 
 	
 );

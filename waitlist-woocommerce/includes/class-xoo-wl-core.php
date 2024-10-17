@@ -22,7 +22,8 @@ class Xoo_Wl_Core{
 		add_action( 'wp_ajax_xoo_wl_form_submit', array( $this, 'form_submit' ) );
 		add_action( 'wp_ajax_nopriv_xoo_wl_form_submit', array( $this, 'form_submit' ) );
 		add_action( 'xoo_wl_cron_send_back_in_stock_email_for_product', array( $this, 'cron_send_back_in_stock_email_for_product' ) );
-		add_action( 'xoo_wl_form_submit_success', array( $this, 'save_wpml_lang_meta' ) );  
+		add_action( 'xoo_wl_form_submit_success', array( $this, 'save_wpml_lang_meta' ) );
+		add_action( 'init', array( $this, 'schedule_crons_in_queue' ) );  
 	}
 
 
@@ -123,6 +124,11 @@ class Xoo_Wl_Core{
 	}
 
 
+	public function get_crons_in_queue(){
+		return (array) get_option( 'xoo_wl_crons_in_queue' );
+	}
+
+
 	public function trigger_back_in_stock_email_for_product( $product_id ){
 
 		$validate_product = xoo_wl_emails()->emails['backInStock']->product_validation( $product_id );
@@ -131,72 +137,94 @@ class Xoo_Wl_Core{
 			return $validate_product;
 		}
 
-		$crons 	= $this->get_email_cron_history();
+		$crons = xoo_wl_db()->get_cron_rows_by_product_id( $product_id, array( 'inqueue', 'processing' ) );
 
-		$in_process = false;
-
-		foreach ( $crons as $timestamp => $data ) {
-			if( $data['product_id'] === $product_id && $data['status'] === 'processing' ){
-				$in_process = $crons[ $timestamp ];
-				break;
-			}
+		if( !empty( $crons ) ){
+			
+			return new WP_Error( 'in-process', 'Emails are already in process for this product. Please wait for it to finish.' );
+			
 		}
 
-		if( $in_process ){
-			if( ( time() - $timestamp ) < 600 ){
-				return new WP_Error( 'in-process', 'Emails are already in process for this product. Please wait for it to finish.' );
-			}
-			else{
-				$crons[ $timestamp ]['status'] = 'completed';
-				update_option( 'xoo_wl_cron_emails', json_encode( $crons ) );
-			}
-		}
+		$rows = xoo_wl_db()->get_waitlist_rows_by_product( $product_id );
 
-		wp_schedule_single_event( time(), 'xoo_wl_cron_send_back_in_stock_email_for_product', array(
-			$product_id
-		) );
+		$new_cron = array(
+			'product_id' 	=> $product_id,
+			'status' 		=> 'inqueue',
+			'emails_count' 	=> count( $rows )
+		);
 
-		wp_cron();
+		xoo_wl_db()->insert_cron_row( $new_cron );
+
+		update_option( 'xoo-wl-schedule-crons', 'yes' );
+
+		xoo_wl_db()->cleanup_crons();
 
 		return true;
 
 	}
+
+	public function schedule_crons_in_queue(){
+
+		if( get_option( 'xoo-wl-schedule-crons' ) === 'no' ) return;
+
+		$crons 		= xoo_wl_db()->get_cron_rows_by_status( 'inqueue', array(
+			'limit' => 1
+		) );
+
+		if( empty( $crons ) ){
+			update_option( 'xoo-wl-schedule-crons', 'no' );
+			return;
+		}
+
+		$cron = $crons[0];
+		
+		wp_schedule_single_event( time(), 'xoo_wl_cron_send_back_in_stock_email_for_product', array(
+			$cron->cron_id
+		) );
+
+		wp_cron();
+		
+	}
+
 
 	public function get_email_cron_history(){
 		return (array) json_decode( get_option( 'xoo_wl_cron_emails' ), true );
 	}
 
 
-	public function cron_send_back_in_stock_email_for_product( $product_id ){
+	public function cron_send_back_in_stock_email_for_product( $cron_id ){
+
+		$cron = xoo_wl_db()->get_cron_row_by_id( $cron_id );
+
+		if( !$cron ) return;
+
+		$product_id = (int) $cron->product_id;
 
 		$rows = xoo_wl_db()->get_waitlist_rows_by_product( $product_id );
 
-		$crons = $this->get_email_cron_history();
-
-		$started = time();
-
-		$new_cron = array(
-			'product_id' 	=> $product_id,
-			'started' 		=> $started,
-			'status' 		=> 'processing',
-			'count' 		=> count( $rows ),
+		xoo_wl_db()->update_cron_row(
+			array(
+				'status' => 'processing'
+			),
+			array(
+				'cron_id' => $cron_id
+			)
 		);
-
-		$crons[ $started ] = $new_cron;
-
-		if( count( $crons ) > $this->history_count ){
-			$crons = array_slice( $crons , count( $crons ) - $this->history_count, count( $crons ), true );
-		}
-
-		update_option( 'xoo_wl_cron_emails', json_encode( $crons ) );
 
 		foreach ( $rows as $row_data ) {
 			$this->send_back_in_stock_email( $row_data->xoo_wl_id );
 		}
 
-		$crons[ $started ]['status'] = 'completed';
+		xoo_wl_db()->update_cron_row(
+			array(
+				'status' => 'completed'
+			),
+			array(
+				'cron_id' => $cron_id
+			)
+		);
 
-		update_option( 'xoo_wl_cron_emails', json_encode( $crons ) );
+		$this->schedule_crons_in_queue();
 
 	}
 

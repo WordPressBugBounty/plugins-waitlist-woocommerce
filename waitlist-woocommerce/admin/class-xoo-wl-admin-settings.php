@@ -62,7 +62,9 @@ class Xoo_Wl_Admin_Settings{
 
 	public function clear_email_log(){
 		if( !isset( $_GET['clearLog'] ) || !wp_verify_nonce( $_GET['_wpnonce'] ) ) return;
-		delete_option( 'xoo_wl_cron_emails' );
+		xoo_wl_db()->clear_completed_crons();
+		wp_redirect( remove_query_arg(array( 'clearLog', '_wpnonce' ) ) );
+		exit;
 	}
 
 	
@@ -356,11 +358,15 @@ class Xoo_Wl_Admin_Settings{
 
 
 	public function view_email_history_page(){
-		$crons = xoo_wl_core()->get_email_cron_history();
+
+		$crons = xoo_wl_db()->get_cron_rows();
+
 		$args = array(
 			'crons' => $crons,
 		);
+
 		xoo_wl_helper()->get_template( "xoo-wl-table-email-history.php", $args, XOO_WL_PATH.'/admin/templates/' );
+
 	}
 
 

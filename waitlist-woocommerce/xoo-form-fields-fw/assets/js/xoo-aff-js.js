@@ -98,9 +98,6 @@ jQuery(document).ready(function($){
 					if( !active_states ){
 						Handler.$selectStateCont.find('.select2-container').remove();
 						Handler.$selectStateCont.append( Handler.$inputState );
-						Handler.$inputState.show();
-						$selectState.remove();
-
 					}
 					else{
 						Handler.$inputState.remove();
@@ -116,8 +113,7 @@ jQuery(document).ready(function($){
 						if( $selectState.attr('select2') === 'yes' ){
 							$selectState.select2();
 						}
-						$selectState.show();
-
+						
 					}
 
 					
