@@ -3,7 +3,7 @@
  class Xoo_Wl_DB{
 
  	protected static $_instance = null;
-	public $waitlist_table, $waitlist_meta_table;
+	public $waitlist_table, $waitlist_meta_table, $waitlist_crons_table;
 
 	public static function get_instance(){
 		if ( is_null( self::$_instance ) ) {

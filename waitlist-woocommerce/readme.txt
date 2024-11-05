@@ -4,7 +4,7 @@ Donate link: https://www.paypal.me/xootix
 Tags: back in stock, email notification, out of stock, waiting list
 Requires at least: 3.0.1
 Tested up to: 6.6
-Stable tag: 2.7.8
+Stable tag: 2.7.9
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,9 @@ Everything is already setup.Just activate the plugin & you are done.
 4. The Waitlist admin settings page.
 
 == Changelog ==
+
+= 2.7.9 =
+* Fix - PHP 8.2 deprecated warning
 
 = 2.7.8 =
 * Fix - WP rocket recent update fix
