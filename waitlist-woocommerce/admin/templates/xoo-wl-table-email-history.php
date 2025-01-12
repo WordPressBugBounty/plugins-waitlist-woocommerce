@@ -48,7 +48,7 @@
 	</table>
 </div>
 
-<a class="button" href="<?php echo wp_nonce_url( add_query_arg( 'clearLog', 'yes' ) ) ?>">Clear Log</a>
+<a class="button" href="<?php echo wp_nonce_url( add_query_arg( 'clearLog', 'yes' ) ) ?>" style="background-color: #b32d2e; color: #fff">Clear Log & in queue events</a>
 <i>Stores last 30 days entries</i>
 
 <?php if( xoo_wl_core()->history_count < 10 ): ?>

@@ -31,7 +31,7 @@ class Xoo_Wl{
 		$this->define( "XOO_WL_PATH", plugin_dir_path( XOO_WL_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WL_PLUGIN_BASENAME",plugin_basename( XOO_WL_PLUGIN_FILE ) );
 		$this->define( "XOO_WL_URL", untrailingslashit( plugins_url( '/', XOO_WL_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WL_VERSION", "2.7.8" ); //Plugin version
+		$this->define( "XOO_WL_VERSION", "2.8.0" ); //Plugin version
 		$this->define( "XOO_WL_LITE", true );
 	}
 
@@ -127,7 +127,7 @@ class Xoo_Wl{
 			if( $this->hasUpdatedFromOlderVersion() ){
 				$this->fetch_old_plugin_settings();
 				wp_schedule_single_event( time(), 'xoo_wl_cron_fetch_old_waitlist' );
-				wp_cron();
+				$this->run_cron();
 			}
 
 			//Uncheck out of stock visibility
@@ -221,11 +221,6 @@ class Xoo_Wl{
 
 
 	public function is_cron_ok(){
-
-		if( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON === true ){
-			return false;
-		}
-
 		return get_option( 'xoo_wl_cron_working' ) === false || get_option( 'xoo_wl_cron_working' ) === 'yes';
 	}
 
@@ -238,7 +233,7 @@ class Xoo_Wl{
 
 		if( $cronTestCount < 3  || isset( $_GET['xoo-wl-cron-test'] ) ){
 			wp_schedule_single_event( time(), 'xoo_wl_test_cron' );
-			wp_cron();
+			$this->run_cron();
 			$cronTestCount++;
 			update_option( 'xoo_wl_cron_test_count', $cronTestCount );
 		}
@@ -247,10 +242,21 @@ class Xoo_Wl{
 		}
 
 		if( isset( $_GET['xoo-wl-cron-test'] ) ){
-			sleep(2);
+			sleep(5);
 			wp_safe_redirect( remove_query_arg( 'xoo-wl-cron-test' ) );
 		}
 		
+	}
+
+
+	public function run_cron(){
+
+		if (defined('DISABLE_WP_CRON') && DISABLE_WP_CRON) {
+	        require_once ABSPATH . 'wp-includes/cron.php';
+	        spawn_cron();
+	    }
+	    
+		wp_cron();
 	}
 
 	public function test_cron(){

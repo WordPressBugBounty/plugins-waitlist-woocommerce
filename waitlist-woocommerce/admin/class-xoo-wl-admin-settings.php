@@ -404,13 +404,6 @@ class Xoo_Wl_Admin_Settings{
 				</div>
 			</div>
 
-			<?php if( defined( 'DISABLE_WP_CRON' ) && DISABLE_WP_CRON === true ): ?>
-
-				Cron is disabled. Open your wp-config.php file and look for <code>define('DISABLE_WP_CRON', true);</code>.
-				If you find this line, comment it out or set it to false: <code>define('DISABLE_WP_CRON', false);</code>
-
-			<?php endif; ?>
-
 
 			<?php if( get_option( 'xoo_wl_cron_working', true ) !== 'yes' ): ?>
 

@@ -159,6 +159,8 @@ class Xoo_Wl_Core{
 
 		xoo_wl_db()->cleanup_crons();
 
+		$this->schedule_crons_in_queue();
+
 		return true;
 
 	}
@@ -182,7 +184,8 @@ class Xoo_Wl_Core{
 			$cron->cron_id
 		) );
 
-		wp_cron();
+
+		xoo_wl()->run_cron();
 		
 	}
 

@@ -554,12 +554,7 @@
 
 		global $wpdb;
 
-		return $wpdb->delete(
-			$this->waitlist_crons_table,
-			array(
-				'status' => 'completed'
-			)
-		);
+		return $wpdb->query( "TRUNCATE TABLE $this->waitlist_crons_table" );
 	}
 
 
