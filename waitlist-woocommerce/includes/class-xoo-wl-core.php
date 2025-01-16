@@ -153,6 +153,7 @@ class Xoo_Wl_Core{
 			'emails_count' 	=> count( $rows )
 		);
 
+
 		xoo_wl_db()->insert_cron_row( $new_cron );
 
 		update_option( 'xoo-wl-schedule-crons', 'yes' );
@@ -232,7 +233,7 @@ class Xoo_Wl_Core{
 	}
 
 	public function save_wpml_lang_meta( $row_id ){
-		if( !class_exists( 'SitePress' ) || !isset( $_POST['xoo-wl-wpml-lang'] ) ) return;
+		if( !isset( $_POST['xoo-wl-wpml-lang'] ) ) return;
 		$lang = sanitize_text_field( $_POST['xoo-wl-wpml-lang'] );
 		xoo_wl_db()->update_waitlist_meta( $row_id, 'wpml_lang', $lang );
 	}

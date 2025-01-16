@@ -113,8 +113,11 @@ class Xoo_Wl_Admin_Settings{
 			</ol>
 			<h4>Translation</h4>
 			<ul>
+				<?php if( defined('TRP_PLUGIN_VERSION') ): ?>
+					<li><a href="https://docs.xootix.com/waitlist-for-woocommerce#translatepress" target="__blank">How to translate emails with Translatepress?</a></li>
+				<?php endif; ?>
 				<li>You can use plugin <a href="https://wordpress.org/plugins/loco-translate/" target="__blank">Loco Translate</a> to translate all plugin texts.</li>
-				<li>Plugin is also compatible with multilingual plugins such as WPML and Polylang</li>
+				<li>Plugin is also compatible with multilingual plugins such as WPML, Polylang & Translatepress</li>
 			</ul>
 		</div>
 
@@ -153,6 +156,11 @@ class Xoo_Wl_Admin_Settings{
 	public function display_preview_template_form( $tab_id, $tab_data ){
 		if( $tab_id === 'email' || $tab_id === 'email-style' ){
 			$this->get_preview_template_form();
+			if( defined('TRP_PLUGIN_VERSION') ){
+				?>
+				<a href="https://docs.xootix.com/waitlist-for-woocommerce#translatepress" target="__blank" style="display: table; margin-bottom: 20px;">How to translate emails with Translatepress?</a>
+				<?php
+			}
 		}
 		
 	}

@@ -35,7 +35,7 @@ class Xoo_Wl_Frontend{
 		if( xoo_wl_helper()->get_general_option( 'm-en-shop' ) === "yes" ){
 			add_action( 'woocommerce_after_shop_loop_item', array( $this, 'show_waitlist_on_shop_page' ), 15 );
 		}
-		add_action( 'xoo_wl_form_end', array( $this, 'wpml_lang_field' ) );
+		add_action( 'xoo_wl_form_end', array( $this, 'lang_field' ) );
 	}
 
 
@@ -189,10 +189,19 @@ class Xoo_Wl_Frontend{
 		echo xoo_wl_form_markup( $product->get_id(), 'popup' );
 	}
 
-	public function wpml_lang_field(){
-		if( !class_exists( 'SitePress' ) ) return;
+	public function lang_field(){
+
+		if( class_exists( 'SitePress' ) ){
+			$lang = ICL_LANGUAGE_CODE;
+		}
+		elseif ( defined('TRP_PLUGIN_VERSION') ) {
+			$lang = get_locale();
+		}
+
+		if( !isset( $lang ) ) return;
+
 		?>
-		<input type="hidden" name="xoo-wl-wpml-lang" value="<?php echo ICL_LANGUAGE_CODE ?>">
+		<input type="hidden" name="xoo-wl-wpml-lang" value="<?php echo $lang ?>">
 		<?php
 	}
 

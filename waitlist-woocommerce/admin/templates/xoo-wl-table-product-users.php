@@ -28,7 +28,7 @@ if( $product = wc_get_product( $product_id ) ){
 			<?php echo wp_kses_post( $product->get_image() ); ?>
 			<div class="xoo-wl-uth-right">
 
-				<span><a href="<?php echo esc_url( $product->is_type('variation') ? get_edit_post_link( $product->get_parent_id() ) : get_edit_post_link( $product_id ) ); ?>" target="_blank"><?php echo esc_html( $product->get_name() ); ?></a></span>
+				<span><a href="<?php echo esc_url( $product->is_type('variation') ? get_edit_post_link( $product->get_parent_id() ) : get_edit_post_link( $product_id ) ); ?>" target="_blank"><?php echo $product->get_formatted_name(); ?></a></span>
 
 				<span class="xoo-wl-ut-ucount"><?php printf( '<b>No of users:</b> <span>%s</span>', $count['rowsCount'] ); ?></span>
 

@@ -140,16 +140,27 @@ abstract class Xoo_Wl_Email{
 		add_filter( 'wp_mail_from_name', array( $this, 'get_sender_name' ) );
 		add_filter( 'wp_mail_content_type', array( $this, 'get_content_type' ) );
 
-		add_filter( 'wpml_user_language', array( $this, 'wpml_set_user_lang' ), 10, 2 );
-		do_action( 'wpml_switch_language_for_email', $email );
-
+		if( class_exists( 'SitePress' ) ){
+			add_filter( 'wpml_user_language', array( $this, 'wpml_set_user_lang' ), 10, 2 );
+			do_action( 'wpml_switch_language_for_email', $email );
+		}
 		
-		$message 				= $this->parse_placeholders( $this->get_template() );
+		if( defined('TRP_PLUGIN_VERSION') ){
+			trp_switch_language( $this->get_row_lang() );
+		}
+
+		$subject 				= html_entity_decode( $this->parse_placeholders( $this->get_subject() ) );
+		$message 				= html_entity_decode( $this->parse_placeholders( $this->get_template() ) );
 		$message              	= apply_filters( 'xoo_wl_mail_content', wp_kses( $message, array_merge( wp_kses_allowed_html('post'), array( 'style' => array() ) ) ), $this );
 		$mail_callback        	= apply_filters( 'xoo_wl_mail_callback', 'wp_mail', $this );
-		$mail_callback_params 	= apply_filters( 'xoo_wl_mail_callback_params', array( $emails , $this->parse_placeholders( $this->get_subject() ), $message, $this->get_headers(), $this->get_attachments() ), $this );
+		$mail_callback_params 	= apply_filters( 'xoo_wl_mail_callback_params', array( $emails , $subject, $message, $this->get_headers(), $this->get_attachments() ), $this );
 
 		$validation = apply_filters( 'xoo_wl_before_sending_email', $this->validation(), $this, $mail_callback_params );
+
+		if( defined('TRP_PLUGIN_VERSION') ){
+			$mail_callback_params[1] 	= do_shortcode($subject);
+			$mail_callback_params[2] 	= do_shortcode($message);
+		}
 
 		if( is_wp_error( $validation ) ){
 			$return = $validation;
@@ -179,7 +190,12 @@ abstract class Xoo_Wl_Email{
 			$return = true;
 
 		}
-			
+
+
+		if( defined('TRP_PLUGIN_VERSION') ){
+			trp_restore_language();
+		}
+
 
 		do_action( 'xoo_wl_email_'.$this->id.'_sent', $return, $this );
 
@@ -193,8 +209,13 @@ abstract class Xoo_Wl_Email{
 
 	public function wpml_set_user_lang( $lang, $email ){
 
-		$storedLang = xoo_wl_db()->get_waitlist_meta( $this->row_id, 'wpml_lang' );
+		$storedLang = $this->get_row_lang();
 		return $storedLang ? $storedLang : $lang;
+	}
+
+
+	public function get_row_lang(){
+		return xoo_wl_db()->get_waitlist_meta( $this->row_id, 'wpml_lang' );
 	}
 
 

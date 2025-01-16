@@ -98,6 +98,9 @@ if( class_exists( 'Xoo_Aff_fields' ) ){
 				'placeholder' => array(
 					'value' => 'Quantity',
 				),
+				'default' 		=> array(
+					'value' 	=> 1,
+				),
 				'unique_id' => array(
 					'disabled' => 'disabled',
 				)
