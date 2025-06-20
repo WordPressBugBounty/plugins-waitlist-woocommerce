@@ -276,7 +276,8 @@ jQuery(document).ready(function($){
 		var settings_container_data = {
 			field_id: fieldObj.id,
 			type_data: _types[ fieldObj.type ],
-			fields_html: fields_html
+			fields_html: fields_html,
+			field_title: this.getTitle()
 		}
 		$fieldSettings.html( this.settings_container_template( settings_container_data ) );
 
@@ -343,7 +344,7 @@ jQuery(document).ready(function($){
 					new MultipleOptions( $(el) );
 				} )
 
-				settings.setLabel();
+				//settings.setLabel();
 				$fieldSettings.show();
 				$fieldsDisplay.show();
 				$fieldSelector.hide();
@@ -368,11 +369,10 @@ jQuery(document).ready(function($){
 
 		var field_display_data = {
 			field_id: this.id,
-			type_data: _types[this.type]
+			type_data: _types[this.type],
 		};
 
-		var settings 	= _userFields[ this.id ]['settings'],
-		title 			= settings.label ? settings.label : ( settings.placeholder ? settings.placeholder : this.id );
+		field_display_data.field_title = this.getTitle();
 
 
 		//field_display_data.type_data.title = title;
@@ -388,6 +388,13 @@ jQuery(document).ready(function($){
 		}
 
 	};
+
+
+	Field.prototype.getTitle = function(){
+		var settings 	= _userFields[ this.id ]['settings'],
+		title 			= settings.label ? settings.label : ( settings.placeholder ? settings.placeholder : this.id );
+		return title;
+	}
 
 
 	Field.prototype.delete = function(){
@@ -528,6 +535,15 @@ jQuery(document).ready(function($){
 			var type 	= $(ui.selected).data('field');
 			field 		= new Field( null, type );
 			field.openFieldView();
+
+			if( _types[ type ]['type'] === 'autocomplete_address' ){
+				if( !xoo_aff_localize.en_autocompadr ){
+					add_notice( 'Autocomplete address requires add-on..', 'info', 99999 );
+				}
+				else if( !xoo_aff_localize.autocompadr_setup ){
+					add_notice( 'Google API key not found. Please add the key under settings for autocomplete address to work', 'error', 99999 );
+				}
+			}
 		},
 
 		onDisplaySelect: function(){
@@ -822,6 +838,23 @@ jQuery(document).ready(function($){
 	$fieldsDisplay.sortable({
 	    items : 'li:not(.xoo-aff-no-sort)'
 	});
+
+
+
+	var currentInputState = null;
+	
+	$('body').on( 'mousedown click', '#xoo_aff_select_list input[name="xoo_aff_radio_single"]', function(e){
+
+		if( event.type === 'mousedown' ){
+			currentInputState = $(this).prop('checked');
+		}
+		if( event.type === 'click' ){
+			if( currentInputState ){
+				$(this).prop('checked', false);
+			}
+		}
+
+	} )
 
 })
 

@@ -6,12 +6,10 @@ class Xoo_Wl_Helper extends Xoo_Helper{
 
 	protected static $_instance = null;
 
-	public static function get_instance( $slug, $path ){
+	public static function get_instance( $slug, $path, $helperArgs = array() ){
 		if ( is_null( self::$_instance ) ) {
 
-			self::$_instance = new self( $slug, $path );
-
-			self::$_instance->capability = 'administrator';
+			self::$_instance = new self( $slug, $path, $helperArgs );
 
 		}
 		return self::$_instance;
@@ -36,7 +34,11 @@ class Xoo_Wl_Helper extends Xoo_Helper{
 }
 
 function xoo_wl_helper(){
-	return Xoo_Wl_Helper::get_instance( 'waitlist-woocommerce', XOO_WL_PATH );
+	return Xoo_Wl_Helper::get_instance( 'waitlist-woocommerce', XOO_WL_PATH, array(
+		'pluginFile' 	=> XOO_WL_PLUGIN_FILE,
+		'pluginName' 	=>	'Waitlist for Woocommerce',
+		'capability' 	=> 'manage_woocommerce' 
+	) );
 }
 xoo_wl_helper();
 

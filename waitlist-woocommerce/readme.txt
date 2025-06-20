@@ -3,8 +3,8 @@ Contributors: XootiX
 Donate link: https://www.paypal.me/xootix
 Tags: back in stock, email notification, out of stock, waiting list
 Requires at least: 3.0.1
-Tested up to: 6.7
-Stable tag: 2.8.1
+Tested up to: 6.8
+Stable tag: 2.8.2
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,6 +69,12 @@ Everything is already setup.Just activate the plugin & you are done.
 4. The Waitlist admin settings page.
 
 == Changelog ==
+
+= 2.8.2=
+* Settings UI Update
+* New fields support
+* Settings UI Update
+* Store manager can now access waitlist
 
 = 2.8.1=
 * Translatepress compatibility

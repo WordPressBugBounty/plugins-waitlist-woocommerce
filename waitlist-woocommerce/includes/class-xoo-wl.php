@@ -31,7 +31,7 @@ class Xoo_Wl{
 		$this->define( "XOO_WL_PATH", plugin_dir_path( XOO_WL_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WL_PLUGIN_BASENAME",plugin_basename( XOO_WL_PLUGIN_FILE ) );
 		$this->define( "XOO_WL_URL", untrailingslashit( plugins_url( '/', XOO_WL_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WL_VERSION", "2.8.1" ); //Plugin version
+		$this->define( "XOO_WL_VERSION", "2.8.2" ); //Plugin version
 		$this->define( "XOO_WL_LITE", true );
 	}
 
@@ -87,6 +87,7 @@ class Xoo_Wl{
 
 		add_action( 'xoo_wl_test_cron', array( $this, 'test_cron' ) );
 		add_action( 'admin_init', array( $this, 'check_cron_status' ) );
+		add_filter( 'xoo_aff_enable_autocompadr', array( $this,'enable_autocompadr' ), 10, 2 ); 
 		
 
 	}
@@ -191,6 +192,10 @@ class Xoo_Wl{
 
 		if( $db_version && version_compare( $db_version, '2.7.8', '<') ){
 			$this->reformat_emailcronhistory();
+		}
+
+		if( $db_version && version_compare( $db_version, '2.8.2', '<')  ){
+			update_option('xoo_tracking_consent_waitlist-woocommerce', 'no' );
 		}
 
 		if( version_compare( $db_version, XOO_WL_VERSION, '<') ){
@@ -344,6 +349,10 @@ class Xoo_Wl{
 		return get_option( 'xoo-wl-gl-enguest' ) !== false;
 	}
 
+	public function enable_autocompadr( $allow, $aff ){
+		if( $aff->plugin_slug === 'waitlist-woocommerce' ) return false;
+		return $allow;
+	}
 
 }
 

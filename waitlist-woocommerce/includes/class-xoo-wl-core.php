@@ -23,7 +23,7 @@ class Xoo_Wl_Core{
 		add_action( 'wp_ajax_nopriv_xoo_wl_form_submit', array( $this, 'form_submit' ) );
 		add_action( 'xoo_wl_cron_send_back_in_stock_email_for_product', array( $this, 'cron_send_back_in_stock_email_for_product' ) );
 		add_action( 'xoo_wl_form_submit_success', array( $this, 'save_wpml_lang_meta' ) );
-		add_action( 'init', array( $this, 'schedule_crons_in_queue' ) );  
+		add_action( 'init', array( $this, 'schedule_crons_in_queue' ) ); 
 	}
 
 

@@ -25,7 +25,7 @@ class Xoo_Wl_Frontend{
 		add_action( 'wp_enqueue_scripts' , array( $this,'enqueue_scripts' ), 5 );
 		add_action( 'wp_footer', array( $this, 'popup_markup' ) );
 
-		if( function_exists('wc_current_theme_is_fse_theme') && wc_current_theme_is_fse_theme() ){
+		if( function_exists('wp_is_block_theme') && wp_is_block_theme() ){
 			add_action( 'init', array( $this, 'block_theme_add_hook_for_waitlist_on_product_page' ) );
 		}
 		else{

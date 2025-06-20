@@ -391,6 +391,16 @@ $field_settings = array(
 		'value'		=> 'yes',
 	),
 
+	'file_multiple_max' 	=> array(
+		'type' 		=> 'number',
+		'id'		=> 'file_multiple_max',
+		'section' 	=> 'basic',	
+		'title' 	=> 'Maximum number of files',
+		'width'		=> 'half',
+		'value'		=> 3,
+		'info' 		=> 'When Multiple files are allowed'
+	),
+
 	'file_type'	=> array(
 		'type' 		=> 'text',
 		'id'		=> 'file_type',
@@ -401,6 +411,77 @@ $field_settings = array(
 		'info'		=> 'Use comma separated values. For eg: .png, .jpg, .pdf. Leave empty for any file type',
 	),
 
+
+	'upload_layout' => array(
+		'type' 		=> 'select',
+		'id'		=> 'upload_layout',
+		'section' 	=> 'basic',
+		'title' 	=> 'Layout',
+		'options' 	=> array(
+			'profile' 	=> 'Profile',
+			'file' 		=> 'Default File Upload',
+		),
+		'width'		=> 'half',
+		'value'		=> 'profile',
+	),
+
+	'profile_icon_size' => array(
+		'type' 		=> 'number',
+		'id'		=> 'profile_icon_size',
+		'section' 	=> 'basic',
+		'title' 	=> 'Profile Icon Size',
+		'width'		=> 'half',
+		'value'		=> 80,
+	),
+
+
+	'autocomplete_auto_fetch' => array(
+		'type' 		=> 'checkbox',
+		'id'		=> 'autocomplete_auto_fetch',
+		'section' 	=> 'basic',
+		'title' 	=> 'Auto fetch location',
+		'width'		=> 'half',
+		'value'		=> 'yes',
+		'info'		=> 'Auto fetch location via browser.',
+	),
+
+
+
+	'autocomplete_field_id' => array(
+		'type' 		=> 'text',
+		'id'		=> 'autocomplete_field_id',
+		'section' 	=> 'advanced',
+		'title' 	=> 'Autocomplete Address Field ID',
+		'width'		=> 'half',
+		'value'		=> '',
+		'info'		=> 'If you have an autocomplete address field and want to extract a specific address part to fill this field.',
+	),
+
+
+	'autocomplete_field_type' => array(
+		'type' 		=> 'select',
+		'id'		=> 'autocomplete_field_type',
+		'section' 	=> 'advanced',
+		'title' 	=> 'Autocomplete Address Part',
+		'width'		=> 'half',
+		'options' 	=> array(
+			'address' 		=> 'Address',
+			'postal_code' 	=> 'Postal Code',
+			'city' 			=> 'City',
+			'states' 		=> 'States'
+		),
+		'value'		=> 'Which address part do you want to auto-fill in this field?',
+	),
+
+
+	'one_line' 	=> array(
+		'type' 		=> 'checkbox',
+		'id'		=> 'one_line',
+		'section' 	=> 'basic',	
+		'title' 	=> 'Show Items in One Line',
+		'width'		=> 'half',
+		'value'		=> 'no',
+	),
 
 
 	/**
