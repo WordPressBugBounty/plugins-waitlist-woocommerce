@@ -137,18 +137,19 @@ function xoo_wl_form_shortcode($user_atts){
 	$atts = shortcode_atts( array(
 		'id' 			=> 0,
 		'type' 			=> xoo_wl_helper()->get_general_option('m-form-type'),
-		'text' 			=> xoo_wl_helper()->get_general_option( 'm-btn-txt' )
+		'text' 			=> xoo_wl_helper()->get_general_option( 'txt-btn' )
 	), $user_atts, 'xoo_wl_form');
+
 
 	if( !$atts['id'] ){
 	    global $product;
 	    if( $product ){
-	    	xoo_wl_form_markup( $product->get_id(), xoo_wl_helper()->get_general_option('m-form-type')  );
+	    	$atts['id'] = $product->get_id();
 	    }
 	}
-	else{
-		return xoo_wl_form_markup( $atts['id'], $atts['type'], $atts );
-	}
+
+
+	return xoo_wl_form_markup( $atts['id'], $atts['type'], $atts );
 
 }
 add_shortcode( 'xoo_wl_form', 'xoo_wl_form_shortcode' );

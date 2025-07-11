@@ -51,7 +51,7 @@ class Xoo_Wl_Admin_Settings{
 		if( xoo_wl_helper()->admin->is_settings_page() ){
 			remove_action( 'xoo_tab_page_start', array(  xoo_wl_helper()->admin, 'info_tab_data' ), 10, 2 );
 			add_action( 'xoo_tab_page_end', array(  $this, 'troubleshoot_info' ), 10, 2 );
-			add_action( 'xoo_tab_page_start', array(  $this, 'other_info' ), 15, 2 );
+			add_action( 'xoo_tab_page_start', array(  $this, 'other_info' ), 35, 2 );
 		}
 
 		add_action( 'wp_loaded', array( $this, 'register_addons_tab' ), 20 );

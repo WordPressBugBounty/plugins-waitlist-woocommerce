@@ -445,3 +445,20 @@ span.xoo-wl-imp-progress {
     margin-bottom: 10px;
     display: inline-block;
 }
+
+
+.xoo-sc-shortcodes {
+    margin-top: -40px;
+}
+
+.xoo-sc-tab-content[data-tab="info"] > div {
+    margin-bottom: 40px;
+}
+
+.xoo-sc-container {
+    padding: 16px  0 0 0;
+}
+
+.xoo-sc-tab-content[data-tab="info"] h3 {
+    font-size: 18px;
+}

@@ -58,7 +58,7 @@ class Xoo_Wl_Back_In_Stock_Email extends Xoo_Wl_Email{
 
 	public function product_validation( $product_id = '' ){
 
-		if( !$productValidateID || $productValidateID != $product_id ){
+		if( !$this->productValidateID || $this->productValidateID != $product_id ){
 
 			$this->productValidateID = $product_id;
 
@@ -77,7 +77,7 @@ class Xoo_Wl_Back_In_Stock_Email extends Xoo_Wl_Email{
 				$this->productValidateResult = true;
 				
 			} catch (Xoo_Exception $e) {
-				$this->productValidateResult 	= $e;
+				$this->productValidateResult 	= $e->to_wp_error();
 			}
 
 		}

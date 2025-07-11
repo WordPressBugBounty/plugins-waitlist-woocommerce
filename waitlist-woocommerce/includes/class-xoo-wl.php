@@ -31,7 +31,7 @@ class Xoo_Wl{
 		$this->define( "XOO_WL_PATH", plugin_dir_path( XOO_WL_PLUGIN_FILE ) ); // Plugin path
 		$this->define( "XOO_WL_PLUGIN_BASENAME",plugin_basename( XOO_WL_PLUGIN_FILE ) );
 		$this->define( "XOO_WL_URL", untrailingslashit( plugins_url( '/', XOO_WL_PLUGIN_FILE ) ) ); // plugin url
-		$this->define( "XOO_WL_VERSION", "2.8.2" ); //Plugin version
+		$this->define( "XOO_WL_VERSION", "2.8.3" ); //Plugin version
 		$this->define( "XOO_WL_LITE", true );
 	}
 
@@ -88,6 +88,8 @@ class Xoo_Wl{
 		add_action( 'xoo_wl_test_cron', array( $this, 'test_cron' ) );
 		add_action( 'admin_init', array( $this, 'check_cron_status' ) );
 		add_filter( 'xoo_aff_enable_autocompadr', array( $this,'enable_autocompadr' ), 10, 2 ); 
+
+		add_action( 'elementor/widgets/register', array( $this, 'register_elementor_widget' ) );
 		
 
 	}
@@ -352,6 +354,12 @@ class Xoo_Wl{
 	public function enable_autocompadr( $allow, $aff ){
 		if( $aff->plugin_slug === 'waitlist-woocommerce' ) return false;
 		return $allow;
+	}
+
+
+	public function register_elementor_widget( $widgets_manager ){
+		require_once XOO_WL_PATH.'includes/class-xoo-wl-elementor.php';
+		$widgets_manager->register( new \Xoo_WL_Elementor_Widget() );
 	}
 
 }

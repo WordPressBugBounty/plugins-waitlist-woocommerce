@@ -26,6 +26,7 @@ ul.xoo-sc-tabs li {
     text-transform: uppercase;
     width: auto;
     cursor: pointer;
+    user-select: none;
 }
 
 ul.xoo-sc-tabs li.xoo-sct-active {
@@ -120,7 +121,7 @@ form.xoo-as-form {
 .xoo-as-setting {
     margin-bottom: 38px;
     display: flex;
-    gap: 50px;
+    column-gap: 50px;
 }
 
 
@@ -167,13 +168,13 @@ span.xoo-asc-head {
     color: #ffffff;
     text-transform: uppercase;
     font-weight: 500;
-    background-color: #347fad;
+    background-color: #4e86a9;
 }
 
 span.xoo-asc-desc {
     display: block;
-    margin-top: -19px;
-    margin-bottom: 30px;
+    margin-top: -20px;
+    margin-bottom: 20px;
     font-style: italic;
 }
 
@@ -377,12 +378,12 @@ table.xoo-sc-table tr td:first-child {
 
 .xoo-sc-bottom-btns > *:last-child  {
     border-top-right-radius: 2px;
-    2px: 10px;
+    border-bottom-right-radius: 2px;
 }
 
 
 .xoo-sc-bottom-btns {
-    bottom: 18px;
+    bottom: 10px;
 }
 
 .xoo-sc-bottom-btns > * {
@@ -655,15 +656,13 @@ body.rtl .xoo-as-label {
     background-color: #ffffff;
     z-index: 9999;
     flex-wrap: wrap;
-    padding: 8px 10px;
+    padding: 10px;
     border-radius: 5px;
     justify-content: center;
     width: max-content;
     margin: 0 auto;
     max-width: 100%;
-    margin-top: 6px;
-    border-bottom: 2px solid #eeeeee;
-    user-select: none;
+    margin-top: -10px;
 }
 
 .xoo-sc-sections a {
@@ -778,6 +777,8 @@ span.xoo-as-info {
 .xoo-as-patdesc .dashicons {
     cursor: pointer;
 }
+
+
 .xoo-as-setting.xoo-as-has-asset label{
     margin-right: 0;
 }
@@ -787,10 +788,9 @@ span.xoo-as-info {
 }
 
 ul.xoo-sc-tabs li[data-tab="pro"] {
-    background-color: gold;
+    background-color: #ffd700;
     color: #000;
 }
-
 
 .xoo-sc-tab-content[data-tab="info"] h3 {
     background-color: transparent;

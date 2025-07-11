@@ -11,8 +11,7 @@ class Xoo_Helper{
 		$this->path 		= $path;
 		$this->helperArgs 	= wp_parse_args( $helperArgs, array(
 			'pluginFile' 	=> '',
-			'pluginName' 	=> '',
-			'capability' 	=> 'manage_options'
+			'pluginName' 	=> ''
 		) );
 
 		$this->set_constants();
@@ -23,7 +22,7 @@ class Xoo_Helper{
 
 	public function set_constants(){
 		$this->define( 'XOO_FW_URL', untrailingslashit(plugin_dir_url( XOO_FW_DIR .'/'.basename( XOO_FW_DIR ) ) ) );
-		$this->define( 'XOO_FW_VERSION', '1.6.1' );
+		$this->define( 'XOO_FW_VERSION', '1.7' );
 	}
 
 	public function define( $name, $value ){
@@ -110,8 +109,7 @@ class Xoo_Helper{
 	public function get_option( $key, $subkey = '' ){
 		$option = get_option( $key );
 		if( $subkey ){
-			if( !isset( $option[ $subkey ] ) ) return;
-			return !is_array( $option[ $subkey ] ) ? esc_attr( $option[ $subkey ] ) : $option[ $subkey ];
+			return isset( $option[ $subkey ] ) ? $option[ $subkey ] : '';
 		}
 		else{
 			return $option;

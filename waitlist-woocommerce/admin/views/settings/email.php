@@ -77,7 +77,7 @@ $settings = array(
 		'section_id' 	=> 'em_bis',
 		'id' 			=> 'bis-check-stock',
 		'title' 		=> 'Force check product stock status',
-		'default' 		=> 'yes',
+		'default' 		=> 'no',
 		'desc' 			=> 'Before sending back in stock email, this will check if the product is actually in stock or not.'
 	),
 

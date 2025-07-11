@@ -2,7 +2,7 @@
 /**
 * Plugin Name: Waitlist woocommerce( Back in stock notifier )
 * Plugin URI: http://xootix.com/waitlist-for-woocommerce
-* Version: 2.8.2
+* Version: 2.8.3
 * Text Domain: waitlist-woocommerce
 * Domain Path: /languages
 * Author URI: http://xootix.com
