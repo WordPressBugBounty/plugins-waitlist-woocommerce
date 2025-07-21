@@ -57,7 +57,30 @@ class Xoo_Wl_Admin_Settings{
 		add_action( 'wp_loaded', array( $this, 'register_addons_tab' ), 20 );
 		add_action('xoo_tab_page_start', array( $this, 'addon_html' ), 10, 2 );
 
+		add_action( 'xoo_as_setting_sidebar_waitlist-woocommerce', array( $this, 'sidebar_html' ) );
+
 	}
+
+
+	public function sidebar_html(){
+		?>
+
+		<ol>
+
+			<?php if ( defined( 'ELEMENTOR_PRO_VERSION' ) ): ?>
+
+				<li>For product pages created with <code>Elementor</code>, the widget can be added directly via the Elementor editor. Simply search for <code>Waitlist</code> to locate and insert the widget.</li>
+
+			<?php endif; ?>
+			
+			<li><code>[xoo_wl_form]</code> shortcode is used to display the waitlist form. If you're not using this shortcode on a product page or outside the product loop, you must also add the <code>id</code> attribute. Please refer to the "Info" tab for more details.</li>
+			
+			
+		</ol>
+
+		<?php
+	}
+
 
 
 	public function clear_email_log(){

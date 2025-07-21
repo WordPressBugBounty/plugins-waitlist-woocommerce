@@ -706,10 +706,11 @@ class Xoo_Admin{
 		$this->sort();
 
 		$args = array(
-			'adminObj' 	=> $this,
-			'settings' 	=> $this->settings,
-			'tabs' 		=> $this->tabs,
-			'hasPRO' 	=> $this->hasPRO
+			'adminObj' 		=> $this,
+			'settings' 		=> $this->settings,
+			'tabs' 			=> $this->tabs,
+			'hasPRO' 		=> $this->hasPRO,
+			'hasSidebar' 	=> isset( $this->helper->helperArgs['sidebar'] ) && $this->helper->helperArgs['sidebar']
 		);
 
 		$args = apply_filters( 'xoo_admin_settings_output_args', $args, $this->helper->slug, $this );

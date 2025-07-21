@@ -147,6 +147,8 @@ class Xoo_Wl_Core{
 
 		$rows = xoo_wl_db()->get_waitlist_rows_by_product( $product_id );
 
+		if( !$rows || empty( $rows ) ) return;
+
 		$new_cron = array(
 			'product_id' 	=> $product_id,
 			'status' 		=> 'inqueue',

@@ -37,7 +37,8 @@ function xoo_wl_helper(){
 	return Xoo_Wl_Helper::get_instance( 'waitlist-woocommerce', XOO_WL_PATH, array(
 		'pluginFile' 	=> XOO_WL_PLUGIN_FILE,
 		'pluginName' 	=>	'Waitlist for Woocommerce',
-		'capability' 	=> 'manage_woocommerce' 
+		'capability' 	=> 'manage_woocommerce',
+		'sidebar' 		=> true
 	) );
 }
 xoo_wl_helper();
