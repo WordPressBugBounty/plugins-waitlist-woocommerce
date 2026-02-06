@@ -12,6 +12,12 @@ class Xoo_Wl_Row{
 
 	public $product_id = 0;
 
+	public $email;
+
+	public $product;
+
+	public $db_row;
+
 	public function __construct( $row_id ){
 
 		if( is_a( $row_id, 'Xoo_Wl_Row' ) ){
@@ -23,6 +29,7 @@ class Xoo_Wl_Row{
 
 		if( !$row_data || empty( $row_data ) ) return;
 
+		$this->db_row 		= $row_data;
 		$this->row_id 		= $row_id;
 		$this->email 		= esc_attr( $row_data->email );
 		$this->quantity 	= esc_attr( $row_data->quantity );
@@ -62,6 +69,7 @@ class Xoo_Wl_Row{
 	}
 
 	public function get_product_image_src(){
+		
 		if ( $this->product->get_image_id() ) {
 			return wp_get_attachment_url( $this->product->get_image_id() );
 		}
