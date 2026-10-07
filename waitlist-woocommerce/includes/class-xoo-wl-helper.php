@@ -80,6 +80,14 @@ class Xoo_Wl_Helper extends Xoo_Helper{
 		return xoo_recursive_parse_args( $args, parent::get_button_values( $args ) );
 	}
 
+	public function get_usage_data(){
+
+		return array(
+			'version' 	=> XOO_WL_VERSION,
+		);
+		
+	}
+
 }
 
 function xoo_wl_helper(){
